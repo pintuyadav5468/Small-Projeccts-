@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quiz-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .quiz-header h2 {
+      margin-bottom: 1rem;
+    }
+
+    .option {
+      background-color: #f1f1f1;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .option:hover {
+      background-color: #dceeff;
+    }
+
+    .option.correct {
+      background-color: #a2f5a2;
+    }
+
+    .option.wrong {
+      background-color: #f5a2a2;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      background-color: #5c6bc0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #3f51b5;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <h2 id="question">Loading...</h2>
+      <div id="options"></div>
+      <button id="next">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "Which language is used for web apps?",
+        options: ["Python", "Java", "HTML", "C++"],
+        answer: "HTML"
+      },
+      {
+        question: "Who wrote 'Hamlet'?",
+        options: ["Charles Dickens", "William Shakespeare", "J.K. Rowling", "Leo Tolstoy"],
+        answer: "William Shakespeare"
+      },
+      {
+        question: "What is the square root of 64?",
+        options: ["6", "7", "8", "9"],
+        answer: "8"
+      }
+    ];
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next");
+
+    let currentQuiz = 0;
+    let score = 0;
+    let selected = false;
+
+    function loadQuiz() {
+      selected = false;
+      const currentData = quizData[currentQuiz];
+      questionEl.textContent = currentData.question;
+      optionsEl.innerHTML = "";
+
+      currentData.options.forEach(opt => {
+        const div = document.createElement("div");
+        div.classList.add("option");
+        div.textContent = opt;
+        div.onclick = () => selectOption(div, currentData.answer);
+        optionsEl.appendChild(div);
+      });
+    }
+
+    function selectOption(selectedOption, correctAnswer) {
+      if (selected) return;
+      selected = true;
+      const options = document.querySelectorAll(".option");
+      options.forEach(opt => {
+        opt.classList.add(opt.textContent === correctAnswer ? "correct" : "wrong");
+        opt.style.pointerEvents = "none";
+      });
+
+      if (selectedOption.textContent === correctAnswer) {
+        score++;
+      }
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (!selected) {
+        alert("Please select an option!");
+        return;
+      }
+      currentQuiz++;
+      if (currentQuiz < quizData.length) {
+        loadQuiz();
+      } else {
+        quizEnd();
+      }
+    });
+
+    function quizEnd() {
+      questionEl.textContent = `Quiz Completed! 🎉`;
+      optionsEl.innerHTML = `<h3>Your Score: ${score} / ${quizData.length}</h3>`;
+      nextBtn.style.display = "none";
+    }
+
+    loadQuiz();
+  </script>
+</body>
+</html>
+
+
